@@ -8,6 +8,7 @@ class ShowQuestions extends React.Component {
     this.state = {
       gameWon: false,
       inputAnswer: '',
+      images: [],
       random: this.props.questions[Math.floor(Math.random() * this.props.questions.length)]
     }
   }
@@ -16,26 +17,47 @@ class ShowQuestions extends React.Component {
       [e.target.name]: e.target.value
     })
   }
+  //create a function that will display the 4th element in array
+  showImage = () =>{
+    let images = this.state.images;
+    let firstImage;
+    for(var i = 0; i < images.length; i++){
+      firstImage = images[images.length - 1].img
+      return firstImage
+    }
+    return firstImage
+  }
   handleSubmit = (e, value) => {
     e.preventDefault();
     let inputAnswer = this.state.inputAnswer;
     let questions = this.props.questions;
-    let countDown = this.state.countDown;
     let random = this.state.random;
+    let gameWon = this.state.gameWon;
+    let images = this.state.images;
+    console.log(this.state.gameWon)
     for (var i = 0; i < questions.length; i++) {
       if (inputAnswer === random.answer && questions[i].answer === random.answer) {
         console.log("you got it!")
         questions.splice(i, 1);
-        console.log("new questions array", questions)
+        images.pop()
         this.setState({
-          random: questions[Math.floor(Math.random() * this.props.questions.length)]
+          inputAnswer: '',
+          random: questions[Math.floor(Math.random() * this.props.questions.length)],
+          images: this.state.images
         })
-        if(this.state.random.question == undefined && questions == undefined && !random.question || random == undefined){
+        if(questions === undefined || questions.length == 0){
           alert("You won!");
           this.setState({
+            inputAnswer: '',
             random: undefined,
-            gameWon: !this.state.gameWon
+            gameWon: true
           })
+          if(gameWon === true){
+            console.log(this.state.gameWon)
+            this.setState({
+              inputAnswer: ""
+            })
+          }
         }
       } else {
         console.log("keep going")
@@ -46,20 +68,30 @@ class ShowQuestions extends React.Component {
     })
   }
   //function that when each item in the array gets less than before, then render image
-  showGirl = () =>{
+  componentWillMount = () =>{
+    let currentComponent = this;
     let questions = this.props.questions;
-    
+    let images = this.state.images;
+    axios.get('/girl').then(function(response){
+      currentComponent.setState({
+        images: response.data
+      })
+    }).catch(function(err){
+      console.log(err)
+    })
   }
   render() {
     return (
       <div>
         <h1>Begin Game</h1>
         <h2>Question:</h2>
+        {this.state.random.question}
         <form onSubmit={this.handleSubmit}>
-          {this.state.random.question ? this.state.random.question : ""}
-          <input type="text" name="inputAnswer" value={this.state.inputAnswer} onChange={this.handleInputChange} />
+        <br/>
+          <input type="text" name="inputAnswer" value={this.state.inputAnswer} onChange={this.handleInputChange} placeholder="answer"/>
           <button type="button" onClick={this.handleSubmit}>submit</button>
         </form>
+        <img className="display-img" src={this.showImage()} />
       </div>
     )
   }
