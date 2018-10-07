@@ -20,12 +20,12 @@ class ShowQuestions extends React.Component {
   //create a function that will display the 4th element in array
   showImage = () =>{
     let images = this.state.images;
-    let firstImage;
+    let currentImage;
     for(var i = 0; i < images.length; i++){
-      firstImage = images[images.length - 1].img
-      return firstImage
+      currentImage = images[images.length - 1].img
+      return currentImage
     }
-    return firstImage
+    return currentImage
   }
   handleSubmit = (e, value) => {
     e.preventDefault();
@@ -46,11 +46,12 @@ class ShowQuestions extends React.Component {
           images: this.state.images
         })
         if(questions === undefined || questions.length == 0){
+          console.log(gameWon)
           alert("You won!");
           this.setState({
             inputAnswer: '',
             random: undefined,
-            gameWon: true
+            gameWon: !this.state.gameWon
           })
           if(gameWon === true){
             console.log(this.state.gameWon)
@@ -81,11 +82,13 @@ class ShowQuestions extends React.Component {
     })
   }
   render() {
+    // console.log(this.state.gameWon)
+    // let random = this.state.random
     return (
       <div>
         <h1>Begin Game</h1>
         <h2>Question:</h2>
-        {this.state.random.question}
+        {this.state.random !== undefined ? this.state.random.question : this.state.random == undefined}
         <form onSubmit={this.handleSubmit}>
         <br/>
           <input type="text" name="inputAnswer" value={this.state.inputAnswer} onChange={this.handleInputChange} placeholder="answer"/>

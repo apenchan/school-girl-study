@@ -27288,12 +27288,12 @@ var ShowQuestions = function (_React$Component) {
 
     _this.showImage = function () {
       var images = _this.state.images;
-      var firstImage = void 0;
+      var currentImage = void 0;
       for (var i = 0; i < images.length; i++) {
-        firstImage = images[images.length - 1].img;
-        return firstImage;
+        currentImage = images[images.length - 1].img;
+        return currentImage;
       }
-      return firstImage;
+      return currentImage;
     };
 
     _this.handleSubmit = function (e, value) {
@@ -27315,11 +27315,12 @@ var ShowQuestions = function (_React$Component) {
             images: _this.state.images
           });
           if (questions === undefined || questions.length == 0) {
+            console.log(gameWon);
             alert("You won!");
             _this.setState({
               inputAnswer: '',
               random: undefined,
-              gameWon: true
+              gameWon: !_this.state.gameWon
             });
             if (gameWon === true) {
               console.log(_this.state.gameWon);
@@ -27366,6 +27367,8 @@ var ShowQuestions = function (_React$Component) {
   _createClass(ShowQuestions, [{
     key: 'render',
     value: function render() {
+      // console.log(this.state.gameWon)
+      // let random = this.state.random
       return _React2.default.createElement(
         'div',
         null,
@@ -27379,7 +27382,7 @@ var ShowQuestions = function (_React$Component) {
           null,
           'Question:'
         ),
-        this.state.random.question,
+        this.state.random !== undefined ? this.state.random.question : this.state.random == undefined,
         _React2.default.createElement(
           'form',
           { onSubmit: this.handleSubmit },
